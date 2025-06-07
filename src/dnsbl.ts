@@ -22,9 +22,15 @@ export default class DNSBLs {
 		try {
 			const response = await fetch(`${this.dnsAPI}${name}`);
 			const data = await response.json<DNSResponse>();
+
+			if (typeof data.Status !== 'number') {
+				console.error('Invalid Status type:', typeof data.Status, data);
+				return false;
+			}
+
 			return data.Status === 0;
 		} catch (error) {
-			console.error(`Error checking record ${name}. Details: ${error}`);
+			console.error(`Error checking record ${name}:`, error);
 			return false;
 		}
 	}
