@@ -9,15 +9,14 @@ const app = new Hono();
 
 app.onError(errorHandler)
 
-const querySchema = z.object({
-	strategy: z.enum(["full", "quick"]).optional()
-}).strict();
+const querySchema = z
+	.object({
+		strategy: z.enum(["full", "quick"]).optional()
+	})
+	.strict();
 
 app.get("/:ip", zValidator("query", querySchema), async (c) => {
-	
 	const ip = c.req.param("ip");
-
-	const strategy = c.req.query("strategy");
 
 	const isValidIPv4 =
 		ip.split(".").length === 4 &&
@@ -28,6 +27,8 @@ app.get("/:ip", zValidator("query", querySchema), async (c) => {
 	if (!isValidIPv4) {
 		return c.json({ error: "Invalid IPv4 address" }, 400);
 	}
+
+	const { strategy } = c.req.valid("query");
 
 	const responseThreshold = strategy === "quick" ? 1 : blacklists.length;
 
