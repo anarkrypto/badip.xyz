@@ -1,3 +1,7 @@
+type DNSResponse = {
+	Status: number;
+}
+
 export default class DNSBLs {
 	/*
         Google JSON API for DNS over HTTPS (DoH)
@@ -17,7 +21,7 @@ export default class DNSBLs {
 	async checkRecordExists(name: string): Promise<boolean> {
 		try {
 			const response = await fetch(`${this.dnsAPI}${name}`);
-			const data = await response.json<Record<string, unknown>>();
+			const data = await response.json<DNSResponse>();
 			return data.Status === 0;
 		} catch (error) {
 			console.error(`Error checking record ${name}. Details: ${error}`);
