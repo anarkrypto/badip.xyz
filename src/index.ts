@@ -30,9 +30,9 @@ app.get("/:ip", zValidator("query", querySchema), async (c) => {
 
 	const { strategy } = c.req.valid("query");
 
-	const responseThreshold = strategy === "quick" ? 1 : blacklists.length;
+	const threshold = strategy === "quick" ? 1 : blacklists.length;
 
-	const dnsbls = new DNSBLs(blacklists, responseThreshold);
+	const dnsbls = new DNSBLs(blacklists, threshold);
 
 	const results = await dnsbls.searchByIP(ip);
 

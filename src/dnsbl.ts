@@ -11,11 +11,11 @@ export default class DNSBLs {
 
 	dnsbls: string[];
 
-	responseThreshold: number
+	threshold: number
 
-	constructor(dnsbls: string[], responseThreshold?: number) {
+	constructor(dnsbls: string[], threshold?: number) {
 		this.dnsbls = dnsbls;
-		this.responseThreshold = responseThreshold || this.dnsbls.length
+		this.threshold = threshold || this.dnsbls.length
 	}
 
 	async checkRecordExists(name: string): Promise<boolean> {
@@ -46,11 +46,11 @@ export default class DNSBLs {
 				const exists = await this.checkRecordExists(`${reverseIP}.${dnsbl}`);
 				if (exists){
 					found.push(dnsbl);
-					if (found.length >= this.responseThreshold) {
+					if (found.length >= this.threshold) {
 						resolve(found)
 					}
 				}
-				console.log(`${dnsbl} ${exists} ${this.responseThreshold}`)
+				console.log(`${dnsbl} ${exists} ${this.threshold}`)
 			})
 
 			await Promise.all(promises)
