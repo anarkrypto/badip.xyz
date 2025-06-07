@@ -31,8 +31,7 @@ export default class DNSBLs {
 			const data = await response.json<DNSResponse>();
 
 			if (typeof data.Status !== "number") {
-				console.error("Invalid Status type:", typeof data.Status, data);
-				return false;
+				throw new Error (`Invalid Status type: ${typeof data.Status}`);
 			}
 
 			return data.Status === 0;
