@@ -36,7 +36,11 @@ app.get("/:ip", zValidator("query", querySchema), async (c) => {
 
 	const results = await dnsbls.searchByIP(ip);
 
-	return c.json({ success: true, isBad: results.length > 0, blacklists: results });
+	const isBad = results.length > 0;
+
+	return c.json(
+		{ success: true, isBad, blacklists: results },
+	);
 });
 
 export default app;
