@@ -12,12 +12,22 @@ export default class DNSBLs {
 		this.threshold = threshold || this.dnsbls.length;
 	}
 
+	buildDnsHttpApi(dnsbl: string, ip: string) {
+		const reverseIP = ip.split(".").reverse().join(".");
+		const name = `${reverseIP}.${dnsbl}`;
+		const httpApi = `${this.dnsAPI}${name}`;
+		return { name, httpApi };
+	}
+
 	async checkRecordExists(
-		name: string,
+		dnsbl: string,
+		ip: string,
 		signal?: AbortSignal
 	): Promise<boolean> {
+		const { name, httpApi } = this.buildDnsHttpApi(dnsbl, ip);
+
 		try {
-			const response = await fetch(`${this.dnsAPI}${name}`, { signal });
+			const response = await fetch(httpApi, { signal });
 			const data = await response.json<DNSResponse>();
 
 			if (typeof data.Status !== "number") {
@@ -42,17 +52,13 @@ export default class DNSBLs {
 				return;
 			}
 
-			const reverseIP = ip.split(".").reverse().join(".");
 			const found: string[] = [];
 			const controller = new AbortController();
 			const signal = controller.signal;
 			let resolved = false;
 
 			const promises = this.dnsbls.map(async (dnsbl) => {
-				const exists = await this.checkRecordExists(
-					`${reverseIP}.${dnsbl}`,
-					signal
-				);
+				const exists = await this.checkRecordExists(dnsbl, ip, signal);
 				if (exists) {
 					found.push(dnsbl);
 					if (found.length >= this.threshold && !resolved) {
