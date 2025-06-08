@@ -3,11 +3,14 @@ import { blacklists } from "./config";
 import DNSBLs from "./dnsbl";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import { errorHandler } from "./middlewares";
+import { corsMiddleware, errorHandler } from "./middlewares";
+import { Env } from "./env";
 
-const app = new Hono();
+const app = new Hono<Env>();
 
-app.onError(errorHandler)
+app.onError(errorHandler);
+
+app.use("*", corsMiddleware());
 
 const querySchema = z
 	.object({
@@ -38,9 +41,7 @@ app.get("/:ip", zValidator("query", querySchema), async (c) => {
 
 	const isBad = results.length > 0;
 
-	return c.json(
-		{ success: true, isBad, blacklists: results },
-	);
+	return c.json({ success: true, isBad, blacklists: results });
 });
 
 export default app;
