@@ -10,7 +10,7 @@ Detect bad IPS on your network and applications with this JSON REST API built wi
   - **Quick**: Resolves as soon as it finds the IP address in any blacklist.
   - **Full**: Searches in all configured blacklists before returning a result.
 
- **Demo**: [https://api.badip.info/103.183.106.19?strategy=full](https://api.badip.info/103.183.106.19?strategy=full)
+ **Demo**: [https://api.badip.xyz/103.183.106.19?strategy=full](https://api.badip.xyz/103.183.106.19?strategy=full)
 
 ## Running locally
 
